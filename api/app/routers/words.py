@@ -6,7 +6,6 @@ from app.schemas import WordResponse
 
 router = APIRouter()
 
-
 words = [
     { "word": "Ephemeral", "definition": "Lasting for a very short time.", "difficulty": "Advanced" },
     { "word": "Ubiquitous", "definition": "Present, appearing, or found everywhere.", "difficulty": "Intermediate" },
@@ -18,4 +17,14 @@ words = [
 
 @router.get("/word", response_model=WordResponse)
 def get_random_word():
-    ... 
+    """Get a random word"""
+    if not words:
+        raise HTTPException(status_code=404, detail="No words available")
+    
+    word_data = random.choice(words)
+    return WordResponse(
+        id=random.randint(1, 1000), 
+        word=word_data["word"],
+        definition=word_data["definition"],
+        difficulty_level=word_data["difficulty"]
+    )

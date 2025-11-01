@@ -1,5 +1,6 @@
-from fastapi import FastAPI
-
+from fastapi import FastAPI, HTTPException
+from app.schemas import WordResponse
+from app.routers import words
 # Initialize FastAPI app
 app = FastAPI(
     title="Vocabulary Practice API",
@@ -7,15 +8,22 @@ app = FastAPI(
     description="API for vocabulary practice and learning"
 )
 
-@app.get("/api/word")
+app.include_router(words.router, prefix="/api")
+
+@app.get("/api/word", response_model=WordResponse)
 def get_random_word():
     """Get a random word"""
     # TODO Write logic here....
-    return {
-        "word": "example",
-        "definition": "a representative form or pattern",
-        "difficulty_level": "Beginner"
-    }
+    # return WordResponse(
+    #     id=1,
+    #     word="example",
+    #     definition="a representative form or pattern",
+    #     difficulty_level="easy"
+    # )
+    word = []
+    if len(word) == 0:
+        raise HTTPException(status_code=404, detail="No words available")
+
 
 @app.get("/")
 def read_root():
